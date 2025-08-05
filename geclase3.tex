@@ -1,0 +1,264 @@
+\documentclass{article}
+\usepackage{fontspec}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\usepackage{lipsum}
+\usepackage[spanish]{babel}
+\usepackage{xcolor}
+\usepackage{eso-pic}
+\usepackage{tikz}
+\usepackage{atbegshi}
+\usepackage[most]{tcolorbox} 
+\usepackage{listings}
+\usepackage{fontawesome5}
+
+\usetikzlibrary{backgrounds}
+
+\setmainfont[
+    Path = ./fonts/Poppins/,
+    Extension = .ttf,
+    UprightFont = *-Regular.ttf,
+    BoldFont = *-Bold.ttf,
+    ItalicFont = *-Italic.ttf,
+    BoldItalicFont = *-BoldItalic.ttf,
+    % LetterSpace=5, 
+]{Poppins}
+
+
+
+\newlength{\borderwidth}
+\setlength{\borderwidth}{20pt} 
+
+
+\geometry{a4paper,
+          left=\dimexpr1cm+\borderwidth,
+          right=\dimexpr1cm+\borderwidth,
+          top=\dimexpr2cm+\borderwidth,
+          bottom=\dimexpr0.5cm+\borderwidth,
+          headheight=1.5cm,
+          headsep=0.5cm}
+
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\raisebox{0\height}{\includegraphics[height=1cm,keepaspectratio]{logo-header.png}}}
+\fancyhead[R]{\raisebox{1.25\height}{\large\textbf{Academia Juvenil de Programación Competitiva}}}
+\renewcommand{\headrulewidth}{0pt}
+
+
+\definecolor{primary}{HTML}{116BB1}
+\definecolor{secondary}{HTML}{711E8C}
+\definecolor{tertiary}{HTML}{1ECA6C}
+
+
+\newcommand{\borderOverlay}{
+    \begin{tikzpicture}[remember picture, overlay]
+        \draw[line width=\borderwidth, color=primary]
+            (current page.north west) -- 
+            (current page.north east) --
+            (current page.south east) --
+            (current page.south west) -- cycle;
+    \end{tikzpicture}
+}
+
+\AddToShipoutPictureBG{\borderOverlay}
+
+\newtcolorbox{container}[1]{ 
+    colback=white, 
+    colframe=primary,
+    coltitle=white,
+    title={#1},
+    fonttitle=\bfseries, 
+    arc=2pt,
+    boxrule=2pt, 
+    enhanced, 
+    breakable, 
+    attach boxed title to top left={xshift=5pt, yshift=-5pt}, 
+    boxed title style={colback=primary, size=small}, 
+}
+
+
+\lstdefinestyle{cppstyle}{
+    language=C++,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{primary},
+    commentstyle=\color{tertiary},
+    stringstyle=\color{secondary},
+    backgroundcolor=\color{white!100},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=4,
+    showstringspaces=false,
+    captionpos=b
+}
+
+\newcommand{\cppfile}[2][]{
+    \begin{container}{\faCode \space \space  #1}
+        \lstinputlisting[style=cppstyle]{#2}
+    \end{container}
+}
+
+\newcommand{\inlinecpp}[1]{
+    \lstinline[
+        language=C++,
+        basicstyle=\ttfamily\small\color{primary!80!black},
+        keywordstyle=\color{primary},
+        stringstyle=\color{secondary},
+        commentstyle=\color{tertiary}
+    ]|#1|
+}
+
+
+\newcommand{\documentTitle}{Clase 3}
+\newcommand{\documentSubtitle}{Contenidos de la Clase}
+\newcommand{\documentAuthor}{Francisco Muñoz}
+\newcommand{\documentDate}{9 de Agosto, 2025}
+
+\begin{document}
+
+\thispagestyle{empty}
+\AddToShipoutPictureBG*{}
+\begin{center}
+    \vspace*{2cm}
+    \includegraphics[width=0.75\textwidth]{logo.png} \\[1.5cm]
+    {\Huge \textbf{\documentTitle}} \\[0.5cm]
+    {\Large \documentSubtitle} \\[1.5cm]
+    {\large \documentAuthor} \\[0.5cm]
+    {\large \space \space \documentDate}
+    \vfill
+    {\large Academia Juvenil de Programación Competitiva}
+\end{center}
+\newpage
+
+\section{Introducción}
+
+Este documento contiene los contenidos que deberían ser vistos durante la \textbf{Clase N°3}.
+
+\section{Índice}
+
+\begin{itemize}
+    \item Contenidos
+    \begin{itemize}
+        \item El tipo de dato booleano
+        \item Utilidad
+        \item Operadores lógicos
+        \item Condicionales
+    \end{itemize}
+\end{itemize}
+
+\section{Contenidos}
+
+\subsection{El tipo de dato booleano}
+
+\textbf{¿Qué es un valor booleano?}
+
+Un valor booleano es un tipo de dato que solo puede tener dos posibles valores: \texttt{true} (verdadero) o \texttt{false} (falso). Este tipo de dato es muy útil para representar condiciones lógicas y controlar el flujo de un programa mediante estructuras como \texttt{if}, \texttt{while}, entre otras.
+
+\textbf{Declaración de variables booleanas:}
+
+Para declarar una variable booleana se utiliza la palabra clave \texttt{bool}. Ejemplos:
+
+\cppfile[Ejemplo]{codes/booleano1.cpp}
+
+\textbf{Valores equivalentes:}
+
+En C++, cualquier número distinto de cero se interpreta como \texttt{true}, y el cero como \texttt{false}. Esto permite usar expresiones numéricas como condiciones booleanas.
+
+\cppfile[Ejemplo]{codes/booleano3.cpp}
+
+\vspace{1.5cm}
+
+\vspace{1.5cm}
+
+
+\textbf{Uso común:}
+
+Las variables booleanas se utilizan principalmente para evaluar condiciones a través de la sentencia \texttt{if} que será vista mas adelante.
+
+
+\textbf{Operadores lógicos:}
+\begin{itemize}
+    \item \texttt{==}  : Igualdad
+    \item \texttt{!=}  : Diferente
+    \item \texttt{\&\&} : Y lógico (AND)
+    \item \texttt{||}  : O lógico (OR)
+    \item \texttt{!}   : Negación lógica (NOT)
+\end{itemize}
+
+Estos operadores permiten construir expresiones más complejas que devuelven valores booleanos.
+
+\textbf{Operadores lógicos vs. operadores aritméticos:}
+
+En C++ existen distintos tipos de operadores que cumplen funciones muy diferentes:
+
+\begin{itemize}
+    \item \textbf{Operadores aritméticos:} se utilizan para realizar operaciones matemáticas como suma, resta, multiplicación, etc.
+    \begin{itemize}
+        \item \texttt{+}  : Suma
+        \item \texttt{-}  : Resta
+        \item \texttt{*}  : Multiplicación
+        \item \texttt{/}  : División
+        \item \texttt{\%} : Módulo (residuo de la división)
+    \end{itemize}
+    
+    \item \textbf{Operadores lógicos y de comparación:} se utilizan para construir condiciones que devuelven valores booleanos (\texttt{true} o \texttt{false}).
+    \begin{itemize}
+        \item \texttt{==}  : Igualdad (compara si dos valores son iguales)
+        \item \texttt{!=}  : Diferente (compara si dos valores son distintos)
+        \item \texttt{<}   : Menor que
+        \item \texttt{<=}  : Menor o igual que
+        \item \texttt{>}   : Mayor que
+        \item \texttt{>=}  : Mayor o igual que
+        \item \texttt{\&\&} : Y lógico (AND) — Ambas condiciones deben ser verdaderas
+        \item \texttt{||}  : O lógico (OR) — Al menos una condición debe ser verdadera
+        \item \texttt{!}   : Negación lógica (NOT) — Invierte el valor lógico
+    \end{itemize}
+\end{itemize}
+
+\textbf{Ejemplo comparando operadores:}
+
+\cppfile[Ejemplo]{codes/operadores_logicos.cpp}
+
+
+
+\vspace{1.5cm}
+
+\subsection{Condicionales en C++}
+
+\textbf{¿Qué es una estructura condicional?}
+
+Una estructura condicional permite que un programa tome decisiones durante su ejecución. Esto significa que puede ejecutar ciertas instrucciones solo si se cumple una determinada condición lógica (booleana).
+
+\vspace{0.5em}
+\textbf{La estructura \texttt{if}:}
+
+La forma más básica de una estructura condicional es el uso de \texttt{if}. Si la condición dentro del paréntesis es verdadera, se ejecuta el bloque de código encerrado entre llaves.
+
+\cppfile[Ejemplo]{codes/condicional_if.cpp}
+
+\vspace{0.5em}
+\textbf{La estructura \texttt{if - else}:}
+
+Cuando queremos realizar una acción si se cumple la condición, y otra acción diferente si no se cumple, utilizamos \texttt{if - else}.
+
+\cppfile[Ejemplo]{codes/condicional_if_else.cpp}
+
+\vspace{0.5em}
+\textbf{La estructura \texttt{if - else if - else}:}
+
+Se utiliza cuando hay múltiples condiciones posibles. El programa evalúa las condiciones en orden, y ejecuta el primer bloque cuya condición sea verdadera. Si ninguna se cumple, ejecuta el bloque final \texttt{else}.
+
+\cppfile[Ejemplo]{codes/condicional_if_elseif_else.cpp}
+
+\vspace{0.5em}
+\textbf{Recomendaciones:}
+\begin{itemize}
+    \item Siempre encierra los bloques condicionales entre llaves \texttt{\{\}}, incluso si solo contienen una línea.
+    \item Las condiciones dentro de \texttt{if} deben devolver un valor booleano.
+    \item Puedes usar operadores lógicos y de comparación dentro de las condiciones para tomar decisiones más complejas.
+\end{itemize}
+
+
+
+\end{document}
