@@ -1,0 +1,367 @@
+\documentclass{article}
+\usepackage{fontspec}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\usepackage{lipsum}
+\usepackage[spanish]{babel}
+\usepackage{xcolor}
+\usepackage{eso-pic}
+\usepackage{tikz}
+\usepackage{atbegshi}
+\usepackage[most]{tcolorbox} 
+\usepackage{listings}
+\usepackage{fontawesome5}
+
+\usetikzlibrary{backgrounds}
+
+\setmainfont[
+    Path = ./fonts/Poppins/,
+    Extension = .ttf,
+    UprightFont = *-Regular.ttf,
+    BoldFont = *-Bold.ttf,
+    ItalicFont = *-Italic.ttf,
+    BoldItalicFont = *-BoldItalic.ttf,
+    % LetterSpace=5, 
+]{Poppins}
+
+
+
+\newlength{\borderwidth}
+\setlength{\borderwidth}{20pt} 
+
+
+\geometry{a4paper,
+          left=\dimexpr1cm+\borderwidth,
+          right=\dimexpr1cm+\borderwidth,
+          top=\dimexpr2cm+\borderwidth,
+          bottom=\dimexpr0.5cm+\borderwidth,
+          headheight=1.5cm,
+          headsep=0.5cm}
+
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\raisebox{0\height}{\includegraphics[height=1cm,keepaspectratio]{logo-header.png}}}
+\fancyhead[R]{\raisebox{1.25\height}{\large\textbf{Academia Juvenil de Programación Competitiva}}}
+\renewcommand{\headrulewidth}{0pt}
+
+
+\definecolor{primary}{HTML}{116BB1}
+\definecolor{secondary}{HTML}{711E8C}
+\definecolor{tertiary}{HTML}{1ECA6C}
+
+
+\newcommand{\borderOverlay}{
+    \begin{tikzpicture}[remember picture, overlay]
+        \draw[line width=\borderwidth, color=primary]
+            (current page.north west) -- 
+            (current page.north east) --
+            (current page.south east) --
+            (current page.south west) -- cycle;
+    \end{tikzpicture}
+}
+
+\AddToShipoutPictureBG{\borderOverlay}
+
+\newtcolorbox{container}[1]{ 
+    colback=white, 
+    colframe=primary,
+    coltitle=white,
+    title={#1},
+    fonttitle=\bfseries, 
+    arc=2pt,
+    boxrule=2pt, 
+    enhanced, 
+    breakable, 
+    attach boxed title to top left={xshift=5pt, yshift=-5pt}, 
+    boxed title style={colback=primary, size=small}, 
+}
+
+
+\lstdefinestyle{cppstyle}{
+    language=C++,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{primary},
+    commentstyle=\color{tertiary},
+    stringstyle=\color{secondary},
+    backgroundcolor=\color{white!100},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=4,
+    showstringspaces=false,
+    captionpos=b
+}
+
+\newcommand{\cppfile}[2][]{
+    \begin{container}{\faCode \space \space  #1}
+        \lstinputlisting[style=cppstyle]{#2}
+    \end{container}
+}
+
+\newcommand{\inlinecpp}[1]{
+    \lstinline[
+        language=C++,
+        basicstyle=\ttfamily\small\color{primary!80!black},
+        keywordstyle=\color{primary},
+        stringstyle=\color{secondary},
+        commentstyle=\color{tertiary}
+    ]|#1|
+}
+
+
+\newcommand{\documentTitle}{Clase 6: STL 1}
+\newcommand{\documentSubtitle}{Contenidos}
+\newcommand{\documentAuthor}{Francisco Muñoz}
+\newcommand{\documentDate}{30 de Agosto}
+
+\begin{document}
+
+\thispagestyle{empty}
+\AddToShipoutPictureBG*{}
+\begin{center}
+    \vspace*{2cm}
+    \includegraphics[width=0.75\textwidth]{logo.png} \\[1.5cm]
+    {\Huge \textbf{\documentTitle}} \\[0.5cm]
+    {\Large \documentSubtitle} \\[1.5cm]
+    {\large \documentAuthor} \\[0.5cm]
+    {\large \space \space \documentDate}
+    \vfill
+    {\large Academia Juvenil de Programación Competitiva}
+\end{center}
+\newpage
+
+\section{Introducción}
+
+En esta clase aprenderemos un concepto fundamental de la \textbf{Standard Template Library (STL)} de C++: las \textbf{estructuras de datos}. 
+En particular, veremos dos muy utilizadas en programación competitiva y en la vida real: las \textbf{pilas (stack)} y las \textbf{colas (queue)}.
+
+\section{Índice}
+
+\begin{itemize}
+    \item Contenidos
+    \begin{itemize}
+        \item ¿Qué es la STL?
+        \item Pilas (Stack) – LIFO
+        \item Colas (Queue) – FIFO
+        \item Comparación entre Stack y Queue
+    \end{itemize}
+    \item Ejercicios Prácticos
+\end{itemize}
+
+\section{Contenidos}
+
+\subsection{¿Qué es la STL?}
+
+La \textbf{STL (Standard Template Library)} es una colección de clases y funciones listas para usar en C++.  
+Nos permite ahorrar tiempo y escribir código más limpio, en lugar de implementar estructuras de datos desde cero.
+
+Dentro de la STL encontramos:
+\begin{itemize}
+    \item \texttt{vector}
+    \item \texttt{stack}
+    \item \texttt{queue}
+    \item \texttt{priority\_queue}
+    \item \texttt{set}, \texttt{map}, entre otros.
+\end{itemize}
+
+En esta clase nos concentraremos en \texttt{stack} y \texttt{queue}.
+
+\vspace{0.5cm}
+
+\subsection{Stack (Pila)}
+
+Una \textbf{pila} es una estructura de datos que funciona bajo la regla \textbf{LIFO} (\textit{Last In, First Out}): el último elemento en entrar es el primero en salir.  
+Un ejemplo en la vida real es una pila de platos: siempre tomamos el último que colocamos encima.
+
+\textbf{Operaciones principales:}
+\begin{itemize}
+    \item \texttt{push(x)}: Inserta un elemento en la pila.
+    \item \texttt{pop()}: Elimina el elemento en la cima de la pila.
+    \item \texttt{top()}: Devuelve el valor del elemento en la cima.
+    \item \texttt{empty()}: Verifica si la pila está vacía.
+\end{itemize}
+
+\cppfile[Ejemplo de Stack]{codes/stack.cpp}
+
+\vspace{0.5cm}
+
+\subsection{Queue (Cola)}
+
+Una \textbf{cola} es una estructura de datos que funciona bajo la regla \textbf{FIFO} (\textit{First In, First Out}): el primer elemento en entrar es el primero en salir.  
+Un ejemplo en la vida real es la fila del supermercado: el que llega primero es atendido primero.
+
+\textbf{Operaciones principales:}
+\begin{itemize}
+    \item \texttt{push(x)}: Inserta un elemento al final de la cola.
+    \item \texttt{pop()}: Elimina el primer elemento de la cola.
+    \item \texttt{front()}: Devuelve el valor del primer elemento.
+    \item \texttt{back()}: Devuelve el valor del último elemento.
+    \item \texttt{empty()}: Verifica si la cola está vacía.
+\end{itemize}
+
+\cppfile[Ejemplo de Queue]{codes/queue.cpp}
+
+\vspace{0.5cm}
+
+\subsection{Stack vs Queue}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+ & \textbf{Stack (Pila)} & \textbf{Queue (Cola)} \\
+\hline
+\textbf{Regla} & LIFO (último en entrar, primero en salir) & FIFO (primero en entrar, primero en salir) \\
+\hline
+\textbf{Ejemplo real} & Pila de platos & Fila en el banco \\
+\hline
+\textbf{Inserción} & \texttt{push()} agrega arriba & \texttt{push()} agrega al final \\
+\hline
+\textbf{Eliminación} & \texttt{pop()} quita arriba & \texttt{pop()} quita el primero \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+
+\section{Ejercicios Prácticos}
+
+\begin{container}{Problema 1 – Último número en una pila}
+Escribe un programa que reciba $N$ números y los guarde en una \texttt{stack}. Luego imprime el último número que se ingresó.
+\end{container}
+
+\textbf{Input}
+
+Un entero $N$ seguido de $N$ números.
+
+\vspace{0.5em}
+\textbf{Output}
+
+El último número ingresado.
+
+\vspace{0.5em}
+
+\begin{container}{Ejemplo - Input}
+4 \\
+5 7 9 11
+\end{container}
+
+\begin{container}{Ejemplo - Output}
+11
+\end{container}
+
+\vspace{3.5em}
+
+
+\begin{container}{Problema 2 – El primero en la cola}
+Escribe un programa que reciba $N$ palabras y las guarde en una \texttt{queue}. Luego imprime la primera palabra que se ingresó.
+\end{container}
+
+\textbf{Input}
+
+Un entero $N$ seguido de $N$ palabras.
+
+\vspace{0.5em}
+\textbf{Output}
+
+La primera palabra ingresada.
+
+\vspace{0.5em}
+
+\begin{container}{Ejemplo - Input}
+3 \\
+perro gato ratón
+\end{container}
+
+\begin{container}{Ejemplo - Output}
+perro
+\end{container}
+
+\vspace{3.5em}
+
+
+\begin{container}{Problema 3 – Imprimir pila completa}
+Escribe un programa que reciba $N$ números y los imprima en orden inverso al que fueron ingresados usando una \texttt{stack}.
+\end{container}
+
+\textbf{Input}
+
+Un entero $N$ seguido de $N$ números.
+
+\vspace{0.5em}
+\textbf{Output}
+
+Los números en orden inverso.
+
+\vspace{0.5em}
+
+\begin{container}{Ejemplo - Input}
+3 \\
+10 20 30
+\end{container}
+
+\begin{container}{Ejemplo - Output}
+30\\
+20\\
+10
+\end{container}
+
+\vspace{3.5em}
+
+
+\begin{container}{Problema 4 – Imprimir cola completa}
+Escribe un programa que reciba $N$ palabras y las imprima en el mismo orden en que fueron ingresadas usando una \texttt{queue}.
+\end{container}
+
+\textbf{Input}
+
+Un entero $N$ seguido de $N$ palabras.
+
+\vspace{0.5em}
+\textbf{Output}
+
+Las palabras en el mismo orden.
+
+\vspace{0.5em}
+
+\begin{container}{Ejemplo - Input}
+3\\
+Ana Luis Pedro
+\end{container}
+
+\begin{container}{Ejemplo - Output}
+Ana\\
+Luis\\
+Pedro
+\end{container}
+
+\vspace{3.5em}
+
+
+\begin{container}{Problema 5 – Quitar de la pila}
+Escribe un programa que reciba $N$ números, los guarde en una \texttt{stack}, luego elimine el último y finalmente imprima el nuevo último número.
+\end{container}
+
+\textbf{Input}
+
+Un entero $N$ seguido de $N$ números.
+
+\vspace{0.5em}
+\textbf{Output}
+
+El valor que queda en la cima después de quitar el último.
+
+\vspace{0.5em}
+
+\begin{container}{Ejemplo - Input}
+4\\ 
+1 2 3 4
+\end{container}
+
+\begin{container}{Ejemplo - Output}
+3
+\end{container}
+
+
+
+\end{document}
